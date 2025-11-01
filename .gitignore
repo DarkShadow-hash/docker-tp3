@@ -1,0 +1,4 @@
+echo .DS_Store>> .gitignore
+echo .idea/>> .gitignore
+echo .vscode/>> .gitignore
+echo .env>> etape3/.gitignore
