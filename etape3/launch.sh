@@ -2,18 +2,18 @@
 # ============================================================
 # Étape 3 : Lancement avec Docker Compose
 # ------------------------------------------------------------
-# Objectif du script :
-#   1) Me placer dans le bon dossier (etape3) pour éviter les
+# Objectif de ce script final:
+#   1). Me placer dans le bon dossier (etape3) pour éviter les
 #      erreurs de chemins relatifs dans docker-compose.yml
-#   2) Choisir automatiquement la bonne commande "compose"
+#   2). Choisir automatiquement la bonne commande "compose"
 #      (docker compose v2 ou docker-compose v1, selon les PC)
-#   3) Arrêter proprement ce qui tourne déjà (down), avec une
+#   3). Arrêter proprement ce qui tourne déjà (down), avec une
 #      option --reset si je veux repartir d'une base vide
 #      (down -v = supprime aussi les volumes => ré-exécution
 #      de create.sql au prochain démarrage).
-#   4) Re-construire l'image PHP si besoin (option --rebuild)
+#   4). Re-construire l'image PHP si besoin (option --rebuild)
 #      pour être sûre que l’extension mysqli est bien compilée.
-#   5) Démarrer l’ensemble (up -d), afficher l’état (ps) et
+#   5). Démarrer l’ensemble (up -d), afficher l’état (ps) et
 #      rappeler les URLs de test (phpinfo + test.php).
 #
 # Pourquoi écrire ce script :
@@ -29,13 +29,13 @@
 
 set -e  # Si une commande échoue, le script s’arrête (évite les demi-états bizarres)
 
-# 1) Me placer dans le dossier du script (important car compose utilise des chemins relatifs)
+# 1). Me placer dans le dossier du script (important car compose utilise des chemins relatifs)
 #    "$(dirname "$0")" = répertoire où se trouve *ce* fichier
 #    cd … = je me déplace dedans pour que ./src, ./config, ./php
 #    dans docker-compose.yml pointent bien vers ce dossier.
 cd "$(dirname "$0")"
 
-# 2) Détecter la bonne commande "compose"
+# 2). Détecter la bonne commande "compose"
 #    Sur les machines récentes c’est "docker compose".
 #    Sur d’anciennes installations c’est "docker-compose".
 if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
@@ -48,7 +48,7 @@ else
   exit 1
 fi
 
-# 3) Aide rapide si on passe -h/--help
+# 3). Aide rapide si on passe -h/--help
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   echo "Usage : ./launch.sh [--reset] [--rebuild]"
   echo "  --reset   : arrêt + suppression volumes (réinitialise la BDD)"
@@ -56,13 +56,13 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   exit 0
 fi
 
-# 4) Lire les options utilisateur
+# 4). Lire les options utilisateur
 RESET=false    # si true => down -v (je veux réinitialiser la base)
 REBUILD=false  # si true => build --no-cache (recompile PHP+mysqli)
 [[ "${1:-}" == "--reset"   || "${2:-}" == "--reset"   ]] && RESET=true
 [[ "${1:-}" == "--rebuild" || "${2:-}" == "--rebuild" ]] && REBUILD=true
 
-# 5) Vérifs minimales avant de lancer quoi que ce soit
+# 5). Vérifs minimales avant de lancer quoi que ce soit
 #    - docker-compose.yml doit exister (sinon compose ne sait pas quoi faire)
 #    - .env doit exister (je stocke le mot de passe root de MariaDB ici)
 if [[ ! -f "docker-compose.yml" ]]; then
@@ -77,7 +77,7 @@ if [[ ! -f ".env" ]]; then
   exit 1
 fi
 
-# 6) Arrêt propre des services qui tournent déjà
+# 6). Arrêt propre des services qui tournent déjà
 #    --remove-orphans : au cas où des vieux services trainent (autres fichiers compose)
 echo ">> Arrêt des services existants…"
 if $RESET; then
@@ -88,7 +88,7 @@ else
   $COMPOSE down --remove-orphans
 fi
 
-# 7) Construction des images
+# 7). Construction des images
 #    - Notre service "script" a un Dockerfile (php/Dockerfile) pour installer mysqli.
 #    - --no-cache si je veux forcer une recompilation propre.
 echo ">> Construction des images…"
@@ -98,7 +98,7 @@ else
   $COMPOSE build
 fi
 
-# 8) Démarrage des services en arrière-plan
+# 8). Démarrage des services en arrière-plan
 #    - data (MariaDB) va exécuter src/create.sql au premier démarrage
 #    - script (PHP-FPM) a une commande 'sleep 15 && php-fpm' dans le compose
 #      pour laisser quelques secondes à MariaDB avant que PHP s’y connecte.
@@ -106,11 +106,11 @@ fi
 echo ">> Démarrage…"
 $COMPOSE up -d
 
-# 9) Afficher l’état (utile pour vérifier rapidement que tout est “Up”)
+# 9). Afficher l’état (utile pour vérifier rapidement que tout est “Up”)
 echo ">> État des containers :"
 $COMPOSE ps
 
-# 10) Rappels des URLs de test
+# 10). Rappels des URLs de test
 #     - /  => index.php avec phpinfo() -> prouve que Nginx sert /app et parle à PHP-FPM
 #     - /test.php => fait 1 INSERT + 1 SELECT -> prouve que PHP parle à MariaDB (mysqli OK)
 echo
