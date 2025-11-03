@@ -107,15 +107,7 @@ Sans healthcheck, j’ai mis sleep 15 pour éviter l’erreur au premier chargem
 Les variables sensibles vont dans .env (je ne le publie pas). Je fournis .env.example.
 
 
-
-Lancer rapidement
-## Étape 3 
-
-Démarrer :
-./launch.sh        # ou: docker compose up -d
-
-
-Tester :
+### Tester :
 
 
 http://localhost:8080/
@@ -124,7 +116,7 @@ http://localhost:8080/
 http://localhost:8080/test.php
 
 
-Réinitialiser la base
+### Réinitialiser la base
 ./launch.sh --reset   # fait un down -v, rejoue create.sql au prochain up
 
 Étapes 1 et 2 (sans Compose)
