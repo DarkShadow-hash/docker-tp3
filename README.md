@@ -51,9 +51,6 @@ http://localhost:8080 → page phpinfo().
 But : ajouter un container DATA (MariaDB), et faire un CRUD minimal depuis test.php.
 
 
-MariaDB démarre avec create.sql placé dans /docker-entrypoint-initdb.d.
-
-
 J’ai construit une image PHP perso avec l’extension mysqli (Dockerfile).
 
 
@@ -61,9 +58,6 @@ test.php fait un INSERT puis un SELECT et affiche un compteur.
 
 
 ### Ce que j’ai compris :
-
-
-Les scripts .sql dans /docker-entrypoint-initdb.d s’exécutent au premier démarrage du container.
 
 
 L’extension mysqli n’est pas toujours là. Il faut l’installer avec docker-php-ext-install.
